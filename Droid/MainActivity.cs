@@ -27,6 +27,7 @@ namespace Core.Droid
 			this.SetContentView(Resource.Layout.Main);
 			//var lightSignalsView = FindViewById<GridView> (Resource.Id.LightSignal);
 			//lightSignalsView.Adapter = new LightsAdapter(this,new List<Item>{new Item("Red",       Resource.Drawable.)})
+
 			System.Timers.Timer timer = new System.Timers.Timer();
 			timer.Interval = 1000; 
 			timer.Elapsed += ColorFlip;
@@ -37,6 +38,7 @@ namespace Core.Droid
 
 		private void ColorFlip(object sender, System.Timers.ElapsedEventArgs e)
 		{
+			RunOnUiThread (() => {
 			var left = FindViewById<TextView> (Resource.Id.Left);
 			var right = FindViewById<TextView> (Resource.Id.Right);
 
@@ -49,6 +51,7 @@ namespace Core.Droid
 				right.SetBackgroundColor (Color.Black);
 				IsRed = true;
 			}
+			});
 		}
 	}
 }
