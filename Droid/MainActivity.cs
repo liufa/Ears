@@ -26,6 +26,7 @@ namespace Core.Droid
 			var app = new App ();
 			LoadApplication(app);
 			this.SetContentView(Resource.Layout.Main);
+			IsPlayServicesAvailable ();
 			//var lightSignalsView = FindViewById<GridView> (Resource.Id.LightSignal);
 			//lightSignalsView.Adapter = new LightsAdapter(this,new List<Item>{new Item("Red",       Resource.Drawable.)})
 
@@ -53,6 +54,28 @@ namespace Core.Droid
 				IsRed = true;
 			}
 			});
+		}
+
+		public bool IsPlayServicesAvailable ()
+		{
+			int resultCode = GooglePlayServicesUtil.IsGooglePlayServicesAvailable (this);
+			var left = FindViewById<TextView> (Resource.Id.Left);
+			if (resultCode != ConnectionResult.Success)
+			{
+				if (GooglePlayServicesUtil.IsUserRecoverableError (resultCode))
+					left.Text = GooglePlayServicesUtil.GetErrorString (resultCode);
+				else
+				{
+					left.Text = "Sorry, this device is not supported";
+					Finish ();
+				}
+				return false;
+			}
+			else
+			{
+				left.Text = "Google Play Services is available.";
+				return true;
+			}
 		}
 	}
 }
