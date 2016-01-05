@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -9,6 +8,8 @@ using Android.Widget;
 using Android.OS;
 using System.Collections.Generic;
 using Android.Graphics;
+using Android.Gms.Common;
+using Android.Util;
 
 namespace Core.Droid
 {
