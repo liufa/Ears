@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Android.EmergencyAssistanceResponseSystem.iml" filepath="$PROJECT_DIR$/Android.EmergencyAssistanceResponseSystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Android.EARS.iml" filepath="$PROJECT_DIR$/Android.EARS.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

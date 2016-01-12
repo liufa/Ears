@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Android.EmergencyAssistanceResponseSystem</string>
-
-    <string name="dummy_button">Dummy Button</string>
+    <string name="gcm_defaultSenderId">AIzaSyBKPi4Y4J-qWmlhedk-fbaZrNOhcFF3myc</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
