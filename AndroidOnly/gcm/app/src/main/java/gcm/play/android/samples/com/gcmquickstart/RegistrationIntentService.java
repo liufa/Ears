@@ -98,13 +98,13 @@ public class RegistrationIntentService extends IntentService {
     private void sendRegistrationToServer(String token) throws IOException {
         StringBuffer chaine = new StringBuffer("");
         try{
-            URL url = new URL("http://www.balls.com:61594/api/Account/RegisterDevice?token=2342342&coordinates=12.012;13.1515");
+            URL url = new URL("http://10.0.2.2/api/Account/RegisterDevice?token="+token+"&coordinates=12.012,13.1515");
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            connection.setRequestProperty("User-Agent", "");
+          //  connection.setRequestProperty("User-Agent", "");
             connection.setRequestMethod("GET");
-            connection.setDoInput(true);
+          //  connection.setDoInput(true);
             connection.connect();
-
+            int code = connection.getResponseCode();
             InputStream inputStream = connection.getInputStream();
 
             BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
