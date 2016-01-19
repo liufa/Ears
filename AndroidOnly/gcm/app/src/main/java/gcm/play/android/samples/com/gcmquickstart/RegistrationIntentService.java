@@ -19,6 +19,9 @@ package gcm.play.android.samples.com.gcmquickstart;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -98,7 +101,7 @@ public class RegistrationIntentService extends IntentService {
     private void sendRegistrationToServer(String token) throws IOException {
         StringBuffer chaine = new StringBuffer("");
         try{
-            URL url = new URL("http://10.0.2.2/api/Account/RegisterDevice?token="+token+"&coordinates=12.012,13.1515");
+            URL url = new URL("http://10.0.2.2/api/Account/RegisterDevice?token="+token+"&coordinates="+getLocation());
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
           //  connection.setRequestProperty("User-Agent", "");
             connection.setRequestMethod("GET");
@@ -119,6 +122,22 @@ public class RegistrationIntentService extends IntentService {
         }
     }
 
+    private String getLocation() {
+        // Get the location manager
+        LocationManager locationManager = (LocationManager)
+                getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        String bestProvider = locationManager.getBestProvider(criteria, false);
+        if (bestProvider != null) {
+            Location location = locationManager.getLastKnownLocation(bestProvider);
+            try {
+                return location.getLatitude() + "," + location.getLongitude();
+            } catch (NullPointerException e) {
+                return "";
+            }
+        }
+        return "";
+    }
     /**
      * Subscribe to any GCM topics of interest, as defined by the TOPICS constant.
      *
