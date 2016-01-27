@@ -16,12 +16,15 @@
 
 package gcm.play.android.samples.com.gcmquickstart;
 
+import android.Manifest;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -69,6 +72,7 @@ public class RegistrationIntentService extends IntentService {
             Log.i(TAG, "GCM Registration Token: " + token);
 
             // TODO: Implement this method to send any registration to your app's servers.
+
             sendRegistrationToServer(token);
 
             // Subscribe to topic channels
@@ -101,7 +105,7 @@ public class RegistrationIntentService extends IntentService {
     private void sendRegistrationToServer(String token) throws IOException {
         StringBuffer chaine = new StringBuffer("");
         try{
-            URL url = new URL("http://10.0.2.2/api/Account/RegisterDevice?token="+token+"&coordinates="+getLocation());
+            URL url = new URL("http://10.0.2.2:81/api/Account/RegisterDevice?token="+token+"&coordinates="+getLocation());
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
           //  connection.setRequestProperty("User-Agent", "");
             connection.setRequestMethod("GET");
@@ -122,6 +126,7 @@ public class RegistrationIntentService extends IntentService {
         }
     }
 
+
     private String getLocation() {
         // Get the location manager
         LocationManager locationManager = (LocationManager)
@@ -129,14 +134,26 @@ public class RegistrationIntentService extends IntentService {
         Criteria criteria = new Criteria();
         String bestProvider = locationManager.getBestProvider(criteria, false);
         if (bestProvider != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    public void requestPermissions(@NonNull String[] permissions, int requestCode)
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for Activity#requestPermissions for more details.
+                    return "13.1211,12.1313";
+                }
+            }
             Location location = locationManager.getLastKnownLocation(bestProvider);
             try {
                 return location.getLatitude() + "," + location.getLongitude();
             } catch (NullPointerException e) {
-                return "";
+                return "13.1211,12.1313";
             }
         }
-        return "";
+        return "13.1211,12.1313";
     }
     /**
      * Subscribe to any GCM topics of interest, as defined by the TOPICS constant.
