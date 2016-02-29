@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
     private void sendRegistrationToServer(String token) throws IOException {
         StringBuffer chaine = new StringBuffer("");
         try {
-            URL url = new URL("http://10.0.2.2:81/User/CheckForEmergency?token=" + token + "&coordinates=" + getLocation());
+            URL url = new URL("http://www.ears.uk.com/User/CheckForEmergency?token=" + token + "&coordinates=" + getLocation());
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             //  connection.setRequestProperty("User-Agent", "");
             connection.setRequestMethod("GET");
