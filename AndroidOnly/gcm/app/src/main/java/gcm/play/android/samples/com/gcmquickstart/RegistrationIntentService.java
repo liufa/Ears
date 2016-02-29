@@ -105,7 +105,7 @@ public class RegistrationIntentService extends IntentService {
     private void sendRegistrationToServer(String token) throws IOException {
         StringBuffer chaine = new StringBuffer("");
         try{
-            URL url = new URL("http://10.0.2.2:81/api/Account/RegisterDevice?token="+token+"&coordinates="+getLocation());
+            URL url = new URL("http://www.ears.uk.com/api/Account/RegisterDevice?token="+token+"&coordinates="+getLocation());
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
           //  connection.setRequestProperty("User-Agent", "");
             connection.setRequestMethod("GET");
@@ -143,17 +143,17 @@ public class RegistrationIntentService extends IntentService {
                     //                                          int[] grantResults)
                     // to handle the case where the user grants the permission. See the documentation
                     // for Activity#requestPermissions for more details.
-                    return "13.1211,12.1313";
+                    return "-1.1329097,51.257538";
                 }
             }
             Location location = locationManager.getLastKnownLocation(bestProvider);
             try {
                 return location.getLatitude() + "," + location.getLongitude();
             } catch (NullPointerException e) {
-                return "13.1211,12.1313";
+                return "-1.1329097,51.257538";
             }
         }
-        return "13.1211,12.1313";
+        return "-1.1329097,51.257538";
     }
     /**
      * Subscribe to any GCM topics of interest, as defined by the TOPICS constant.
