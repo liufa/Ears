@@ -25,7 +25,6 @@ import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,11 +42,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Timer;
+import java.util.TimerTask;
 
 public class MyGcmListenerService extends GcmListenerService {
-
+private boolean sendNotification = false;
     private static final String TAG = "MyGcmListenerService";
-
+private  Timer timer;
     /**
      * Called when message is received.
      *
@@ -61,13 +61,19 @@ public class MyGcmListenerService extends GcmListenerService {
         String message = data.getString("message");
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "Message: " + message);
-
+        sendNotification = true;
         if (from.startsWith("/topics/")) {
             // message received from some topic.
         } else {
             // normal downstream message.
         }
-       callEmergency();
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                callEmergency();
+            }
+        }, 1000, 2000);
 
         // [START_EXCLUDE]
         /**
@@ -81,11 +87,12 @@ public class MyGcmListenerService extends GcmListenerService {
          * In some cases it may be useful to show a notification indicating to the user
          * that a message was received.
          */
-        sendNotification(message);
+
         // [END_EXCLUDE]
     }
     // [END receive_message]
-    public void callEmergency(){
+    public boolean callEmergency(){
+
         StringBuffer chaine = new StringBuffer("");
         try{
             InstanceID instanceID = InstanceID.getInstance(this);
@@ -106,19 +113,46 @@ public class MyGcmListenerService extends GcmListenerService {
                 chaine.append(line);
             }
             if(chaine.toString() == "True"){
-
+                if(sendNotification){
+                sendNotification("Emergency Vehicle Approaching");
+                sendNotification = false;
+                }
+                ColorFlip();
+            }else{
+                sendNotification = false;
+                timer.cancel();
             }
         } catch (IOException e) {
             // writing exception to log
             e.printStackTrace();
         }
+
+        return chaine.toString() == "True";
     }
     /**
      * Create and show a simple notification containing the received GCM message.
      *
      * @param message GCM message received.
      */
+    private void ColorFlip() {
+     /*   runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                View left = findViewById(R.id.Left);
+                View right = findViewById(R.id.Right);
 
+                if (IsRed) {
+                    left.setBackgroundColor(Color.BLACK);
+                    right.setBackgroundColor(Color.BLUE);
+                    IsRed = false;
+                } else {
+                    left.setBackgroundColor(Color.RED);
+                    right.setBackgroundColor(Color.BLACK);
+                    IsRed = true;
+                }
+            }
+        });*/
+    }
 
     private String getLocation() {
         // Get the location manager
@@ -154,10 +188,11 @@ public class MyGcmListenerService extends GcmListenerService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri defaultSoundUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.alarm);
+        // RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_stat_ic_notification)
-                .setContentTitle("GCM Message")
+                .setContentTitle(message)
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
