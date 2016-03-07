@@ -47,7 +47,6 @@ import java.util.TimerTask;
 public class MyGcmListenerService extends GcmListenerService {
 private boolean sendNotification = false;
     private static final String TAG = "MyGcmListenerService";
-private  Timer timer;
     /**
      * Called when message is received.
      *
@@ -67,13 +66,7 @@ private  Timer timer;
         } else {
             // normal downstream message.
         }
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
                 callEmergency();
-            }
-        }, 1000, 2000);
 
         // [START_EXCLUDE]
         /**
@@ -112,15 +105,8 @@ private  Timer timer;
             while ((line = rd.readLine()) != null) {
                 chaine.append(line);
             }
-            if(chaine.toString() == "True"){
-                if(sendNotification){
+            if(chaine.toString().equals("True")){
                 sendNotification("Emergency Vehicle Approaching");
-                sendNotification = false;
-                }
-                ColorFlip();
-            }else{
-                sendNotification = false;
-                timer.cancel();
             }
         } catch (IOException e) {
             // writing exception to log
