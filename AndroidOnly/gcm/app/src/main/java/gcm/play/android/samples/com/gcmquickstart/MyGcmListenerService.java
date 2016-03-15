@@ -36,6 +36,7 @@ import android.util.Log;
 import com.google.android.gms.gcm.GcmListenerService;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import com.google.android.gms.location.LocationListener;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -68,7 +69,14 @@ private boolean sendNotification = false;
         } else {
             // normal downstream message.
         }
-                callEmergency();
+        new LocationListener() {
+            @Override
+
+            public void onLocationChanged(Location location) {
+                callEmergency(location);
+            }
+        };
+                callEmergency(null);
 
         // [START_EXCLUDE]
         /**
@@ -86,14 +94,15 @@ private boolean sendNotification = false;
         // [END_EXCLUDE]
     }
     // [END receive_message]
-    public boolean callEmergency(){
+    public boolean callEmergency(Location location){
 
         StringBuffer chaine = new StringBuffer("");
         try{
             InstanceID instanceID = InstanceID.getInstance(this);
             String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-            URL url = new URL("http://www.ears.uk.com/User/CheckForEmergency?token="+token+"&coordinates="+getLocation());
+            String coordinates = location!=null? location.getLongitude()+","+location.getLatitude() : getLocation();
+            URL url = new URL("http://www.ears.uk.com/User/CheckForEmergency?token="+token+"&coordinates="+coordinates);
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
             //  connection.setRequestProperty("User-Agent", "");
             connection.setRequestMethod("GET");
@@ -144,6 +153,7 @@ private boolean sendNotification = false;
 
     private String getLocation() {
         // Get the location manager
+
         LocationManager locationManager = (LocationManager)
                 getSystemService(LOCATION_SERVICE);
         Criteria criteria = new Criteria();
