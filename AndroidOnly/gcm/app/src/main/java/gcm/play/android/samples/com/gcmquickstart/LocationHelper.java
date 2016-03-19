@@ -75,7 +75,7 @@ public class LocationHelper implements LocationListener {
             mLocationManager.removeUpdates(this);
 
             String token = PreferencesManager.getInstance(mContext).getUserToken();
-            String coordinates = mLocation.getLongitude() + "," + mLocation.getLatitude();
+            String coordinates = mLocation.getLatitude() + "," + mLocation.getLongitude();
 
             Call<ResponseBody> call = RestClient.getInstance().checkForEmergency(token, coordinates);
             call.enqueue(callback);
