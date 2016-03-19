@@ -16,27 +16,30 @@
 
 package gcm.play.android.samples.com.gcmquickstart;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
-import java.util.Timer;
-
 public class MainActivity extends AppCompatActivity {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final int RC_REQUEST_PERMISSIONS = 001;
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -45,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressBar mRegistrationProgressBar;
     private TextView mInformationTextView;
-    private Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mRegistrationProgressBar = (ProgressBar) findViewById(R.id.registrationProgressBar);
-
+        mInformationTextView = (TextView) findViewById(R.id.informationTextView);
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -71,14 +73,51 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        mInformationTextView = (TextView) findViewById(R.id.informationTextView);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_CONTACTS)) {
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                        RC_REQUEST_PERMISSIONS);
+            }
+
+            return;
+        }
 
         if (checkPlayServices()) {
             // Start IntentService to register this application with GCM.
             Intent intent = new Intent(this, RegistrationIntentService.class);
             startService(intent);
         }
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case RC_REQUEST_PERMISSIONS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+
+                    if (checkPlayServices()) {
+                        // Start IntentService to register this application with GCM.
+                        Intent intent = new Intent(this, RegistrationIntentService.class);
+                        startService(intent);
+                    }
+
+                } else {
+                    Toast.makeText(this, "You couldn't use this app without permissions", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+                return;
+            }
+        }
     }
 
     @Override
