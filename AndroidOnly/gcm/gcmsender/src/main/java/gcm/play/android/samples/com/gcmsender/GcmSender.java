@@ -33,7 +33,7 @@ import java.net.URL;
 // implementation see: https://developers.google.com/cloud-messaging/server
 public class GcmSender {
 
-    public static final String API_KEY = "AIzaSyBKPi4Y4J-qWmlhedk-fbaZrNOhcFF3myc";
+    public static final String API_KEY = "AIzaSyAA-ukge7o6jO5duM0PS85xBrpCh9MqL-Q";
 
     public static void main(String[] args) {
         if (args.length < 1 || args.length > 2 || args[0] == null) {

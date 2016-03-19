@@ -1,12 +1,12 @@
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,17 +33,12 @@ import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
 
 public class RegistrationIntentService extends IntentService {
 
@@ -71,6 +66,7 @@ public class RegistrationIntentService extends IntentService {
             // [END get_token]
             Log.i(TAG, "GCM Registration Token: " + token);
 
+            PreferencesManager.getInstance(this).saveUserToken(token);
             // TODO: Implement this method to send any registration to your app's servers.
 
             sendRegistrationToServer(token);
@@ -96,7 +92,7 @@ public class RegistrationIntentService extends IntentService {
 
     /**
      * Persist registration to third-party servers.
-     *
+     * <p/>
      * Modify this method to associate the user's GCM registration token with any server-side account
      * maintained by your application.
      *
@@ -104,12 +100,12 @@ public class RegistrationIntentService extends IntentService {
      */
     private void sendRegistrationToServer(String token) throws IOException {
         StringBuffer chaine = new StringBuffer("");
-        try{
-            URL url = new URL("http://www.ears.uk.com/api/Account/RegisterDevice?token="+token+"&coordinates="+getLocation());
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-          //  connection.setRequestProperty("User-Agent", "");
+        try {
+            URL url = new URL("http://www.ears.uk.com/api/Account/RegisterDevice?token=" + token + "&coordinates=" + getLocation());
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            //  connection.setRequestProperty("User-Agent", "");
             connection.setRequestMethod("GET");
-          //  connection.setDoInput(true);
+            //  connection.setDoInput(true);
             connection.connect();
             int code = connection.getResponseCode();
             InputStream inputStream = connection.getInputStream();
@@ -155,6 +151,7 @@ public class RegistrationIntentService extends IntentService {
         }
         return "-1.1329097,51.257538";
     }
+
     /**
      * Subscribe to any GCM topics of interest, as defined by the TOPICS constant.
      *
