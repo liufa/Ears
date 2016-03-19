@@ -12,6 +12,7 @@ import android.util.Log;
 
 import java.io.IOException;
 
+import gcm.play.android.samples.com.gcmquickstart.api.RestClient;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,21 +67,21 @@ public class LocationHelper implements LocationListener {
         Log.d(TAG, "latitude = " + location.getLatitude());
         Log.d(TAG, "longitude = " + location.getLongitude());
         mLocation = location;
-//        if (mLocation != null) {
-//            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-//                    && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                return;
-//            }
-//            mLocationManager.removeUpdates(this);
-//
-//            String token = PreferencesManager.getInstance(mContext).getUserToken();
-//            String coordinates = mLocation.getLongitude() + "," + mLocation.getLatitude();
-//
-//            Call<ResponseBody> call = RestClient.getInstance().checkForEmergency(token, coordinates);
-//            call.enqueue(callback);
-//
-//
-//        }
+        if (mLocation != null) {
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            mLocationManager.removeUpdates(this);
+
+            String token = PreferencesManager.getInstance(mContext).getUserToken();
+            String coordinates = mLocation.getLongitude() + "," + mLocation.getLatitude();
+
+            Call<ResponseBody> call = RestClient.getInstance().checkForEmergency(token, coordinates);
+            call.enqueue(callback);
+
+
+        }
     }
 
     @Override
